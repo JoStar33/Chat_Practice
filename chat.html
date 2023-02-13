@@ -1,0 +1,87 @@
+<h1>Message</h1>
+
+<!-- chat contents will be written down below. -->
+<div id="chatContent">
+  
+</div>
+<input id="myChat" type="text">
+<input type="submit" id="send" value="Send">
+<button id="send-chat">보내기</button>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+	const socket = io.connect('http://localhost:8080', {
+		path: '/socket.io',
+		transports: ['websocket']
+	});
+
+	// receiving a message
+	socket.on('msg', function (data) {
+    const chatContent = document.querySelector('#chatContent');
+    const msgLine = document.createElement('div');
+    msgLine.setAttribute('class', 'msgLine');
+    const msgBox = document.createElement('div');
+    msgBox.setAttribute('class', 'msgBox');
+		msgBox.append(data);
+    msgBox.style.display = 'inline-block';
+    msgLine.append(msgBox);
+    chatContent.append(msgLine);
+		chatContent.scrollTop = chatContent.scrollHeight;
+	});
+
+  document.querySelector('#myChat').addEventListener('keyup', function (e) {
+		if (window.event.keyCode === 13 && e.target.value != "") {
+      const chatContent = document.querySelector('#chatContent');
+			const msgLine = document.createElement('div');
+      msgLine.setAttribute('class', 'msgLine');
+      const msgBox = document.createElement('div');
+      msgBox.setAttribute('class', 'msgBox');
+      msgBox.append(e.target.value);
+      msgBox.style.display = 'inline-block';
+      msgLine.style.textAlign = 'right';
+      msgLine.append(msgBox);
+      chatContent.append(msgLine);
+      socket.emit('msg', e.target.value);
+      document.querySelector('#myChat').value = "";
+      chatContent.scrollTop = chatContent.scrollHeight;
+    }
+	});
+</script>
+  
+<style>
+	* {
+		box-sizing: border-box;
+	}
+	.msgLine {
+		margin: 15px;
+	}
+	.msgBox {
+		border: 1px solid black;
+		background: white;
+		padding: 2px 5px;
+		border-radius: 10px;
+	}
+	#chatContent {
+		border: 1px solid #000;
+		width: 100%;
+		height: 200px;
+		margin-bottom: 10px;
+		overflow-y: auto;
+	}
+	#myChat {
+		width: 100%;
+	}
+	#msg, #myChat {
+		width: 80%;
+		height: 32px;
+		border-radius: 8px;
+	}
+	#send {
+    display: none;
+		width: 16%;
+		height: 34px;
+		border-radius: 50px;
+		background: black;
+		color: white;
+	}
+</style>
