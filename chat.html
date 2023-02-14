@@ -10,12 +10,14 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
+  //서버와의 연결
 	const socket = io.connect('http://localhost:8080', {
 		path: '/socket.io',
 		transports: ['websocket']
 	});
 
 	// receiving a message
+  // 이거 왜 있어야할까? 잘 생각해보니까 이유가 있었음. 얘도 이렇게 리스닝을 하면서 다른 소켓으로부터 오는 msg를 받아야할거 아니야!!!
 	socket.on('msg', function (data) {
     const chatContent = document.querySelector('#chatContent');
     const msgLine = document.createElement('div');
@@ -41,6 +43,8 @@
       msgLine.style.textAlign = 'right';
       msgLine.append(msgBox);
       chatContent.append(msgLine);
+      //이벤트를 작성해주고 오브젝트를 넘겨줄 수 있다.
+      //재밌는점은 emit으로 함수를 서버로 전달하는것도 가능하다...? 이게 진짜 대박인듯
       socket.emit('msg', e.target.value);
       document.querySelector('#myChat').value = "";
       chatContent.scrollTop = chatContent.scrollHeight;
