@@ -18,6 +18,7 @@
 
 	// receiving a message
   // 이거 왜 있어야할까? 잘 생각해보니까 이유가 있었음. 얘도 이렇게 리스닝을 하면서 다른 소켓으로부터 오는 msg를 받아야할거 아니야!!!
+  // 이렇게 전달받은 msg를 렌더링~
 	socket.on('msg', function (data) {
     const chatContent = document.querySelector('#chatContent');
     const msgLine = document.createElement('div');
